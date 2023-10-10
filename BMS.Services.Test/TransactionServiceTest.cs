@@ -192,7 +192,92 @@ namespace BMS.Services.Test
             Exception ex = await Assert.ThrowsAsync<Exception>(async () => await transactionService.Withdraw(detail));
         }
 
+        [Fact]
+        public async Task Deposit_Transaction_When_Valid_TransactionDetail()
+        {
+            //Arrange
+            config.Setup(x => x["Rule:MaxDeposit"]).Returns("10000");
 
+            this.setupDepositData();
+            TransactionDetail detail = new TransactionDetail
+            {
+                AccountNumber = 1,
+                Amount = 100
+            };
+
+            //Act
+            var result = await transactionService.Deposit(detail);
+            //Assert
+            Assert.NotNull(result);
+            Assert.Equal(1, result.Transaction.AccountNumber);
+            Assert.Equal(100, result.Transaction.Amount);
+        }
+
+        [Fact]
+        public async Task Deposit_Transaction_When_Account_Is_NoExist_Return_BusinessRule_Validation()
+        {
+            //Arrange
+
+            TransactionDetail detail = new TransactionDetail
+            {
+                AccountNumber = 1,
+                Amount = 100,
+            };
+
+            Account account = null;
+
+            accountService.Setup(x => x.Get(It.IsAny<double>()))
+                .ReturnsAsync(account);
+
+            //Act
+            var result = await transactionService.Deposit(detail);
+            //Assert
+            Assert.NotNull(result);
+            Assert.Equal("An account does not exist!", result.ValidationMessage);
+        }
+       
+        [Fact]
+        public async Task Deposit_Transaction_When_More_Than_10000_Return_BusinessRule_Validation()
+        {
+            //Arrange
+            config.Setup(x => x["Rule:MaxDeposit"]).Returns("10000");
+
+            Account account = new Account
+            {
+                AccountNumber = 1,
+                Balance = 10000
+            };
+
+            accountService.Setup(x => x.Get(It.IsAny<double>()))
+                .ReturnsAsync(account);
+
+            TransactionWithdrawDetail detail = new TransactionWithdrawDetail
+            {
+                AccountNumber = 1,
+                Amount = 10001
+            };
+
+            //Act
+            var result = await transactionService.Deposit(detail);
+            //Assert
+            Assert.NotNull(result);
+            Assert.Equal("Cannot deposit more than 10000 in a single transaction", result.ValidationMessage);
+        }
+
+        [Fact]
+        public async Task Deposit_Transaction_Throw_Exception_When_Configuration_Missing()
+        {
+            //Arrange
+            this.setupDepositData();
+            TransactionDetail detail = new TransactionDetail
+            {
+                AccountNumber = 1,
+                Amount = 100,
+            };
+
+            //Act and Assert
+            Exception ex = await Assert.ThrowsAsync<Exception>(async () => await transactionService.Deposit(detail));
+        }
 
         private void setupData()
         {
@@ -203,6 +288,28 @@ namespace BMS.Services.Test
             {
                 AccountNumber = 1,
                 Balance=10000
+            };
+
+            accountService.Setup(x => x.Get(It.IsAny<double>()))
+                .ReturnsAsync(account);
+
+            Transaction transaction = new Transaction
+            {
+                AccountNumber = 1,
+                TransactionId = 1,
+                Amount = 100
+            };
+
+            data.Setup(x => x.Insert(It.IsAny<Transaction>(), It.IsAny<double>()))
+                .Returns(transaction);
+        }
+
+        private void setupDepositData()
+        {
+            Account account = new Account
+            {
+                AccountNumber = 1,
+                Balance = 10000
             };
 
             accountService.Setup(x => x.Get(It.IsAny<double>()))
