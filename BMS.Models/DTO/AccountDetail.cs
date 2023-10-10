@@ -12,7 +12,7 @@ namespace BMS.Models.DTO
     public  class AccountDetail
     {
         [Required(ErrorMessage = "Account Type field is required.")]
-        public AccountType Account { get; set; } // use PascalCase for property naming
+        public string AccountType { get; set; } // use PascalCase for property naming
 
         [Required(ErrorMessage = "Account Type field is required.")]
         public Decimal Balance { get; set; }

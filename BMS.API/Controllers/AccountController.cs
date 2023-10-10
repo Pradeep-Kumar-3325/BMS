@@ -18,21 +18,6 @@ namespace BMS.API.Controllers
             _account = account;
         }
 
-        [HttpGet]
-        [Route("/api/Get")]
-        public async Task<IActionResult> Get(double Id)
-        {
-            try
-            {
-                return this.Ok(await this._account.Get(Id));
-            }
-            catch (Exception ex)
-            {
-                this._logger.LogError($"Error in Get :- {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error while processing data!");
-            }
-        }
-
         [HttpPost]
         [Route("/api/Create")]
         public async Task<IActionResult> Create(AccountDetail accountDetail)
@@ -40,6 +25,26 @@ namespace BMS.API.Controllers
             try
             {
                 return this.Ok(await this._account.Create(accountDetail));
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError($"Error in Create :- {ex}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error while processing data!");
+            }
+        }
+
+        [HttpGet]
+        [Route("/api/Get")]
+        public async Task<IActionResult> Get(double accountNumber)
+        {
+            try
+            {
+                var response = await this._account.Get(accountNumber);
+
+                if (response == null)
+                    return this.Ok("No Account exists for given account number!");
+
+                return this.Ok(response);
             }
             catch (Exception ex)
             {
@@ -54,11 +59,16 @@ namespace BMS.API.Controllers
         {
             try
             {
-                return this.Ok(await this._account.Delete(accountNumber));
+                var response = await this._account.Delete(accountNumber);
+
+                if (!response)
+                    return this.Ok("No Account exists for given account number!");
+
+                return this.Ok("Deleted Successfully");
             }
             catch (Exception ex)
             {
-                this._logger.LogError($"Error in Get :- {ex}");
+                this._logger.LogError($"Error in Delete :- {ex}");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error while processing data!");
             }
         }

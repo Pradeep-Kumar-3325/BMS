@@ -23,7 +23,7 @@ namespace BMS.Services.Concerte
                 Customer customer = null;
                 var customers = repoCustomer.GetAll();
 
-                if (customers == null)
+                if (customers == null || customers.Count == 0)
                 {
                     customer = await Create(customerDetail);
                     return customer;
@@ -93,8 +93,9 @@ namespace BMS.Services.Concerte
                     CustomerId = new Random().Next(0, Int32.MaxValue),
                     UserName = customerDetail.UserName,
                     Email = customerDetail.Email,
-                    Password = "Welcome@123!",
+                    Password = "Welcome@123",
                     Phone = customerDetail.Phone,
+                    RegistrationDate = DateTime.Now,
                     Address = customerDetail.Address
                 };
                 var createdCustomer = repoCustomer.Insert(customer, customer.CustomerId);

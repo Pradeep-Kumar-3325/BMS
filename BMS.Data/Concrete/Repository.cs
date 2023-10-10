@@ -7,20 +7,21 @@ namespace BMS.Data.Concrete
     {
         // For Real application we should use RDMS or NOSQL.
         // The below for just assignment and for mock
-        private Dictionary<double, T> table;
+        private Dictionary<double, T> table; //Dictionary<double, T> table;
 
         private readonly ILogger<Repository<T>> _logger;
 
         public Repository(ILogger<Repository<T>> logger)
         {
             this._logger = logger;
-            table = BMDDatabase.GetTable<T>();
+            
         }
         public bool Delete(double id)
         {
             try
             {
-                return table.Remove(id);
+                //return table.Remove(id);
+                return BMDDatabase.Remove<T>(id);
             }
             catch (Exception ex)
             {
@@ -32,6 +33,7 @@ namespace BMS.Data.Concrete
         {
             try
             {
+                table = BMDDatabase.GetTable<T>();
                 return table.Where(x => x.Key == id).Select(x => x.Value).FirstOrDefault();
             }
             catch (Exception ex)
@@ -45,6 +47,7 @@ namespace BMS.Data.Concrete
         {
             try
             {
+                table = BMDDatabase.GetTable<T>();
                 return table;
             }
             catch (Exception ex)
@@ -58,7 +61,8 @@ namespace BMS.Data.Concrete
         {
             try
             {
-                table.Add(id, entity);
+                // table = BMDDatabase.GetTable<T>();
+                BMDDatabase.Add(entity, id);
                 return entity;
             }
 
@@ -73,7 +77,9 @@ namespace BMS.Data.Concrete
         {
             try
             {
-                table[id] = entity;
+                BMDDatabase.Update(entity, id);
+                //table[id] = entity;
+                //table = BMDDatabase.GetTable<T>();
                 return entity;
             }
             catch (Exception ex)

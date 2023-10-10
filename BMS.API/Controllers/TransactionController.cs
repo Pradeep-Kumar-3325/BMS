@@ -15,9 +15,14 @@ namespace BMS.API.Controllers
         public TransactionController(ILogger<TransactionController> logger, ITransactionService _transaction)
         {
             _logger = logger;
-            _transaction = _transaction;
+            this._transaction = _transaction;
         }
 
+        /// <summary>
+        /// Please enter password Welcome@123 and user name for withdraw
+        /// </summary>
+        /// <param name="transactionDetail"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("/api/Withdraw")]
         public async Task<IActionResult> Withdraw(TransactionWithdrawDetail transactionDetail)

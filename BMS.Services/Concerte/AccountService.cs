@@ -2,9 +2,11 @@
 using BMS.Data.Interface;
 using BMS.Models.Domain;
 using BMS.Models.DTO;
+using BMS.Models.Enum;
 using BMS.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Net.Http.Headers;
 
 namespace BMS.Services.Concerte
 {
@@ -30,23 +32,33 @@ namespace BMS.Services.Concerte
         /// </summary>
         /// <param name="accountDetail"></param>
         /// <returns></returns>
-        public async Task<Account> Create(AccountDetail accountDetail)
+        public async Task<AccountResponse> Create(AccountDetail accountDetail)
         {
             try
             {
+                AccountResponse response = new AccountResponse();
                 var minAmount = configuration["Rule:MinAmount"];
                 if (string.IsNullOrEmpty(minAmount))
                     _logger.LogInformation($"Configuration of MinAmount is missing");
 
                 if (accountDetail.Balance < Convert.ToDecimal(minAmount))
                 {
-                    throw new Exception("An account cannot have less than $100 at any time in an account!");
+                    response.ValidationMessage = "An account cannot have less than $100 at any time in an account!";
+                    return response;
+                    //throw new Exception("An account cannot have less than $100 at any time in an account!");
                 }
 
                 //// Here we can use unit of work and repository of customer and branch
                //// to create user or get branch detail for account
                 var customer = await this.customerService.CreateOrGet(accountDetail.Customer);
                 var branch = await this.branchService.GetByName(accountDetail.BranchDetail.BranchName, accountDetail.BranchDetail.BankName);
+
+                if (branch == null)
+                {
+                    response.ValidationMessage = "Not able to find Branch! Please enter sbi as bank name and crpf camp as branch name ";
+                    return response;
+                    //throw new Exception("An account cannot have less than $100 at any time in an account!");
+                }
 
                 var account = new Account
                 {
@@ -55,11 +67,12 @@ namespace BMS.Services.Concerte
                     BranchId = branch.BranchId,
                     Balance=accountDetail.Balance,
                     OpeningDate = DateTime.Now,
-                    Type = accountDetail.Account
+                    Type = (AccountType)Enum.Parse(typeof(AccountType), accountDetail.AccountType, true) 
                 };
 
                 var createdAccount = this.repoAccount.Insert(account, account.AccountNumber);
-                return await Task.FromResult(createdAccount);
+                response.Account = createdAccount;
+                return await Task.FromResult(response);
             }
             catch (Exception ex)
             {
