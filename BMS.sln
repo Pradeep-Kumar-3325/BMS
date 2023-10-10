@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BMS.API", "BMS.API\BMS.API.csproj", "{9788071A-762A-463F-BEFC-A9BA28B61087}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BMS.API", "BMS.API\BMS.API.csproj", "{9788071A-762A-463F-BEFC-A9BA28B61087}"
 	ProjectSection(ProjectDependencies) = postProject
 		{4C14904A-C1C8-4D15-B808-F553CD4D224D} = {4C14904A-C1C8-4D15-B808-F553CD4D224D}
 		{7427A1C9-893D-4FE8-A6A5-4F31B9AD59DF} = {7427A1C9-893D-4FE8-A6A5-4F31B9AD59DF}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BMS.Models", "BMS.Models\BMS.Models.csproj", "{7427A1C9-893D-4FE8-A6A5-4F31B9AD59DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BMS.Models", "BMS.Models\BMS.Models.csproj", "{7427A1C9-893D-4FE8-A6A5-4F31B9AD59DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BMS.Data", "BMS.Data\BMS.Data.csproj", "{6CA553DE-94D9-4337-902C-C0F529523059}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BMS.Data", "BMS.Data\BMS.Data.csproj", "{6CA553DE-94D9-4337-902C-C0F529523059}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BMS.Services", "BMS.Services\BMS.Services.csproj", "{4C14904A-C1C8-4D15-B808-F553CD4D224D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BMS.Services", "BMS.Services\BMS.Services.csproj", "{4C14904A-C1C8-4D15-B808-F553CD4D224D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BMS.API.Test", "BMS.API.Test\BMS.API.Test.csproj", "{91E9DEE6-1C5E-4FE1-B394-AFF71E599D1D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +39,10 @@ Global
 		{4C14904A-C1C8-4D15-B808-F553CD4D224D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C14904A-C1C8-4D15-B808-F553CD4D224D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C14904A-C1C8-4D15-B808-F553CD4D224D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91E9DEE6-1C5E-4FE1-B394-AFF71E599D1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91E9DEE6-1C5E-4FE1-B394-AFF71E599D1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91E9DEE6-1C5E-4FE1-B394-AFF71E599D1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91E9DEE6-1C5E-4FE1-B394-AFF71E599D1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
