@@ -87,6 +87,7 @@ namespace BMS.Services.Concerte
                 throw;
             }
         }
+
         public async Task<bool> Delete(double Id)
         {
             try
