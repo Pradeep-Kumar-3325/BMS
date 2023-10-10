@@ -36,7 +36,7 @@ namespace BMS.Services.Concerte
         /// </summary>
         /// <param name="transactionDetail"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
+        /// <exception cref="Exception"></exception>
         public async Task<TransactionResponse> Deposit(TransactionDetail transactionDetail)
         {
             Transaction createdTransaction = null;
@@ -47,7 +47,8 @@ namespace BMS.Services.Concerte
 
                 if (account == null)
                 {
-                    throw new Exception("An account does not exist!");
+                    response.ValidationMessage = "An account does not exist!";
+                    return response;
                 }
 
                 if (!ValidateDeposit(account, transactionDetail, response))
@@ -100,7 +101,7 @@ namespace BMS.Services.Concerte
         /// </summary>
         /// <param name="transactionDetail"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
+        /// <exception cref="Exception"></exception>
         public async Task<TransactionResponse> Withdraw(TransactionWithdrawDetail transactionDetail)
         {
             Transaction createdTransaction = null;
@@ -122,6 +123,7 @@ namespace BMS.Services.Concerte
                 if (account == null)
                 {
                     response.ValidationMessage = "An account does not exist!";
+                    return response;
                 }
 
                 if (!ValidateWithdraw(account, transactionDetail, response))
@@ -131,17 +133,6 @@ namespace BMS.Services.Concerte
                 }
 
                 decimal finalAmount = account.Balance - transactionDetail.Amount;
-
-                //var transaction = new Transaction
-                //{
-                //    TransactionId = new Random().Next(0, Int32.MaxValue),
-                //    AccountNumber = transactionDetail.AccountNumber,
-                //    Amount = transactionDetail.Amount,
-                //    Type = TransactionType.Withdraw,
-                //    Datetime = DateTime.Now
-                //};
-
-                //var createdTransaction = this.repoTransaction.Insert(transaction, transaction.TransactionId);
 
                 createdTransaction = this.CreateTransaction(transactionDetail, TransactionType.Withdraw);
 

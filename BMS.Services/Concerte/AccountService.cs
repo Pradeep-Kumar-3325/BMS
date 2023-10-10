@@ -17,6 +17,9 @@ namespace BMS.Services.Concerte
         private readonly IBranchService branchService;
         private IRepository<Account> repoAccount;
         private readonly IConfiguration configuration;
+
+        // D :- Dependency Inversion  of SOLID :- by passing dependency from constructor
+        // S :- Single Responsibility of SOLID :- Divide repsonsibility between customer, account and branch service
         public AccountService(ILogger<AccountService> logger, IConfiguration configuration, ICustomerService customer, IBranchService branch, IRepository<Account> repoAccount)
         {
             this._logger = logger;
@@ -55,7 +58,7 @@ namespace BMS.Services.Concerte
 
                 if (branch == null)
                 {
-                    response.ValidationMessage = "Not able to find Branch! Please enter sbi as bank name and crpf camp as branch name ";
+                    response.ValidationMessage = "Not able to find Branch! Please enter sbi as bank name and crpf camp as branch name";
                     return response;
                     //throw new Exception("An account cannot have less than $100 at any time in an account!");
                 }

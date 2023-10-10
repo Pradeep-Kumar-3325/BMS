@@ -108,7 +108,6 @@ namespace BMS.API.Test
         public async Task Get_Account_When_Return_Null_From_AccountService()
         {
             //Arrange
-
             Account result = null;
             accountService.Setup(x => x.Get(It.IsAny<double>()))
                .ReturnsAsync(result);
