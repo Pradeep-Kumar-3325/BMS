@@ -1,12 +1,14 @@
 ## Building a Project
 
 Build any .NET Core using the .NET Core CLI, which is installed with [the .NET Core SDK](https://www.microsoft.com/net/download). Then run
-these commands from the CLI in the directory of the project:
+these commands from the CLI in the directory of the project(BMS.API):
 
 ```console
 dotnet build
 dotnet run
 ```
+Then open browser and type 
+`http://localhost:5165/swagger/index.html`
 
 You can directly execute `BMS.API` Project fron Visual Studio 2022
 
