@@ -10,9 +10,15 @@ namespace BMS.Models.DTO
 {
     public class BranchDetail
     {
+        /// <summary>
+        /// branch name should be crpf camp
+        /// </summary>
         [Required(ErrorMessage = "Branch Name field is required.")]
         public string BranchName { get; set; }
 
+        /// <summary>
+        /// bank name should be sbi
+        /// </summary>
         [Required(ErrorMessage = "Bank field is required.")]
         public string BankName { get; set; }
 

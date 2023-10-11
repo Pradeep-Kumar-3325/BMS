@@ -1,10 +1,16 @@
-﻿using BMS.Models.DTO;
+﻿using BMS.Models.Domain;
+using BMS.Models.DTO;
 using BMS.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Net;
 
 namespace BMS.API.Controllers
 {
+    /// <summary>
+    /// We Can use well known Authentication and Authorization process like oauth 2 and 2 way authenication
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class TransactionController : ControllerBase
@@ -19,10 +25,15 @@ namespace BMS.API.Controllers
         }
 
         /// <summary>
-        /// Please enter password Welcome@123 and user name for withdraw
+        /// Withdraw Amount from specific account
         /// </summary>
-        /// <param name="transactionDetail"></param>
+        /// <remarks>
+        /// Please enter password Welcome@123 and user name along with other detail for withdraw
+        /// </remarks>
+        /// <param name="transactionDetail"> transaction detail</param>
         /// <returns></returns>
+        [SwaggerResponse((int)HttpStatusCode.OK, "Transaction", typeof(TransactionResponse))]
+        [SwaggerResponse((int)HttpStatusCode.InternalServerError, Type = typeof(string))]
         [HttpPost]
         [Route("/api/Withdraw")]
         public async Task<IActionResult> Withdraw(TransactionWithdrawDetail transactionDetail)
@@ -38,6 +49,13 @@ namespace BMS.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Deposit the Amount to specific Account
+        /// </summary>
+        /// <param name="transactionDetail"></param>
+        /// <returns></returns>
+        [SwaggerResponse((int)HttpStatusCode.OK, "Transaction", typeof(TransactionResponse))]
+        [SwaggerResponse((int)HttpStatusCode.InternalServerError, Type = typeof(string))]
         [HttpPost]
         [Route("/api/Deposit")]
         public async Task<IActionResult> Deposit(TransactionDetail transactionDetail)
