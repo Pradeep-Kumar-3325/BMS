@@ -7,7 +7,8 @@ these commands from the CLI in the directory of the project(BMS.API):
 dotnet build
 dotnet run
 ```
-Then open browser and type 
+Then open browser and type
+
 `http://localhost:5165/swagger/index.html`
 
 You can directly execute `BMS.API` Project fron Visual Studio 2022
