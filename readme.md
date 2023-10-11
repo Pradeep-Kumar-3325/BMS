@@ -38,17 +38,17 @@ Transaction Type :- 0- Withdraw, 1- Deposit
 
 ### Request
 
-```
+`
     Only Saving,Current and Salary Account Supported
     Bank and Branch Name should be sbi and crpf camp
-```
+`
 
 `POST /api/Create`
 
     curl -i -H 'Accept: application/json' http://localhost:5165/api/create
 
     Sample
-    {
+   ``` {
   "accountType": "Saving",
   "balance": 100,
   "customer": {
@@ -67,7 +67,7 @@ Transaction Type :- 0- Withdraw, 1- Deposit
     "branchName": "crpf camp",
     "bankName": "sbi"
   }
-}
+}```
 
 ### Response
 
@@ -77,7 +77,7 @@ Transaction Type :- 0- Withdraw, 1- Deposit
     Connection: close
     Content-Type: application/json
     Content-Length: 2
-     {
+  ```{
        "account": {
        "accountNumber": 1484542707,
        "customerId": 648701235,
@@ -87,30 +87,30 @@ Transaction Type :- 0- Withdraw, 1- Deposit
        "openingDate": "2023-10-11T17:52:03.4086043+05:30"
      },
      "validationMessage": null
-   }
+   }```
 
    ### Business Rule Vilation :- Response
-     {
+     ```{
        "account": null,
        "validationMessage": "An account cannot have less than $100 at any time in an account!"
-     }
+      }```
 
 ## Transaction Withdraw
-```
+`
 Please provide Welcome@123 as password and username of customer
-```
+`
 
 ### Request
 
 `POST /api/withdraw`
 
     curl -i -H 'Accept: application/json' -d 'name=Foo&status=new' http://localhost:5165/api/withdraw
-    {
+    ```{
       "amount": 10,
        "accountNumber": 1956076790,
        "userName": "pradeep",
        "password": "Welcome@123"
-    }
+    }```
 
 ### Response
 
@@ -122,7 +122,7 @@ Please provide Welcome@123 as password and username of customer
     Location: /thing/1
     Content-Length: 36
 
-    {
+   ``` {
     "transaction": {
     "transactionId": 1546995717,
     "type": 0,
@@ -131,22 +131,22 @@ Please provide Welcome@123 as password and username of customer
     "accountNumber": 1956076790
     },
     "validationMessage": null
-    }
+    }```
 
 ### Transaction Deposit
-```
+`
 Cannot deposit more than 10000 amount in single transaction
-```
+`
 
 ### Request
 
 `POST /api/deposit`
 
     curl -i -H 'Accept: application/json' -d 'name=Foo&status=new' http://localhost:5165/api/deposit
-    {
+    ```{
       "amount": 1000,
       "accountNumber": 1956076790
-    }
+    }```
 
 ### Response
 
@@ -158,7 +158,7 @@ Cannot deposit more than 10000 amount in single transaction
     Location: /thing/1
     Content-Length: 36
 
-    {
+    ```{
       "transaction": {
       "transactionId": 277167246,
       "type": 1,
@@ -167,5 +167,5 @@ Cannot deposit more than 10000 amount in single transaction
       "accountNumber": 1956076790
     },
     "validationMessage": null
-   }
+   }```
 
