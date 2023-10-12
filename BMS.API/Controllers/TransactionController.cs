@@ -1,4 +1,5 @@
-﻿using BMS.Models.Domain;
+﻿using BMS.Models.Constant;
+using BMS.Models.Domain;
 using BMS.Models.DTO;
 using BMS.Services.Interface;
 using Microsoft.AspNetCore.Http;
@@ -34,18 +35,24 @@ namespace BMS.API.Controllers
         /// <returns></returns>
         [SwaggerResponse((int)HttpStatusCode.OK, "Transaction", typeof(TransactionResponse))]
         [SwaggerResponse((int)HttpStatusCode.InternalServerError, Type = typeof(string))]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(string))]
         [HttpPost]
         [Route("/api/Withdraw")]
         public async Task<IActionResult> Withdraw(TransactionWithdrawDetail transactionDetail)
         {
             try
             {
+                if (transactionDetail == null)
+                {
+                    return BadRequest(Constant.Please_Provide_TransactionDetail);
+                }
+
                 return this.Ok(await this._transaction.Withdraw(transactionDetail));
             }
             catch (Exception ex)
             {
                 this._logger.LogError($"Error in Withdraw :- {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error while processing data!");
+                return StatusCode(StatusCodes.Status500InternalServerError, Constant.Error_Processing);
             }
         }
 
@@ -56,18 +63,24 @@ namespace BMS.API.Controllers
         /// <returns></returns>
         [SwaggerResponse((int)HttpStatusCode.OK, "Transaction", typeof(TransactionResponse))]
         [SwaggerResponse((int)HttpStatusCode.InternalServerError, Type = typeof(string))]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(string))]
         [HttpPost]
         [Route("/api/Deposit")]
         public async Task<IActionResult> Deposit(TransactionDetail transactionDetail)
         {
             try
             {
+                if (transactionDetail == null)
+                {
+                    return BadRequest(Constant.Please_Provide_TransactionDetail);
+                }
+
                 return this.Ok(await this._transaction.Deposit(transactionDetail));
             }
             catch (Exception ex)
             {
                 this._logger.LogError($"Error in Deposit :- {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error while processing data!");
+                return StatusCode(StatusCodes.Status500InternalServerError, Constant.Error_Processing);
             }
         }
     }

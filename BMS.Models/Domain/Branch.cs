@@ -9,7 +9,7 @@ namespace BMS.Models.Domain
 {
     public class Branch
     {
-        public double BranchId { get; set; }
+        public long BranchId { get; set; }
 
         public string BankName { get; set; }
 

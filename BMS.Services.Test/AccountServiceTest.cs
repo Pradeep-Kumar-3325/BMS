@@ -47,6 +47,7 @@ namespace BMS.Services.Test
             {
                 Balance = 100,
                 AccountType ="Saving",
+                Customer = new CustomerDetail(),
                 BranchDetail = new BranchDetail
                 {
                     BankName = "sbi",
@@ -69,6 +70,8 @@ namespace BMS.Services.Test
             AccountDetail accountDetail = new AccountDetail
             {
                 Balance = 0,
+                Customer = new CustomerDetail(),
+                BranchDetail = new BranchDetail()
             };
 
             //Act
@@ -86,6 +89,7 @@ namespace BMS.Services.Test
             AccountDetail accountDetail = new AccountDetail
             {
                 Balance = 100,
+                Customer = new CustomerDetail(),
                 BranchDetail = new BranchDetail
                 {
                     BankName = "sbi",
@@ -109,14 +113,26 @@ namespace BMS.Services.Test
             AccountDetail accountDetail = new AccountDetail
             {
                 Balance = 100,
+                Customer = new CustomerDetail(),
             };
-            Customer customer = null;
-
-            customerService.Setup(x => x.CreateOrGet(It.IsAny<CustomerDetail>()))
-                .ReturnsAsync(customer);
 
             //Act and Assert
-            Exception ex = await Assert.ThrowsAsync<System.NullReferenceException>(async () => await accountService.Create(accountDetail));
+            Exception ex = await Assert.ThrowsAsync<System.ArgumentNullException>(async () => await accountService.Create(accountDetail));
+        }
+
+        [Fact]
+        public async Task Create_Throw_Exception_When_CustomerDetail_Missing()
+        {
+            //Arrange
+            config.Setup(x => x["Rule:MinAmount"]).Returns("100");
+
+            AccountDetail accountDetail = new AccountDetail
+            {
+                Balance = 100,
+            };
+
+            //Act and Assert
+            Exception ex = await Assert.ThrowsAsync<System.ArgumentNullException>(async () => await accountService.Create(accountDetail));
         }
 
         [Fact]
@@ -131,25 +147,34 @@ namespace BMS.Services.Test
                 Balance = 100
             };
 
-            data.Setup(x => x.Get(It.IsAny<double>()))
+            data.Setup(x => x.Get(It.IsAny<long>()))
                .Returns(account); ;
 
             //Act
-            var result = await accountService.Get(It.IsAny<double>());
+            var result = await accountService.Get(1);
             //Assert
             Assert.NotNull(result);
             Assert.Equal(result.AccountNumber, 12345);
         }
 
         [Fact]
+        public async Task Get_Account_When_NotValid_AccountNumber()
+        {
+            //Act
+            var result = await accountService.Get(0);
+            //Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
         public async Task Get_Throw_Exception_When_Data_Throw_Exception()
         {
             //Arrange
-            data.Setup(x => x.Get(It.IsAny<double>()))
+            data.Setup(x => x.Get(It.IsAny<long>()))
                .Throws(new Exception());
 
             //Act and Assert
-            Exception ex = await Assert.ThrowsAsync<Exception>(async () => await accountService.Get(It.IsAny<double>()));
+            Exception ex = await Assert.ThrowsAsync<Exception>(async () => await accountService.Get(1));
         }
 
         [Fact]
@@ -157,25 +182,35 @@ namespace BMS.Services.Test
         {
             //Arrange
 
-            data.Setup(x => x.Delete(It.IsAny<double>()))
+            data.Setup(x => x.Delete(It.IsAny<long>()))
                .Returns(true);
 
             //Act
-            var result = await accountService.Delete(It.IsAny<double>());
+            var result = await accountService.Delete(1);
             //Assert
             Assert.NotNull(result);
             Assert.Equal(result, true);
         }
 
         [Fact]
+        public async Task Delete_Account_When_NotValid_AccountNumber()
+        {
+            //Act
+            var result = await accountService.Delete(0);
+            //Assert
+            Assert.False(result);
+        }
+
+
+        [Fact]
         public async Task Delete_Throw_Exception_When_Data_Throw_Exception()
         {
             //Arrange
-            data.Setup(x => x.Delete(It.IsAny<double>()))
+            data.Setup(x => x.Delete(It.IsAny<long>()))
                .Throws(new Exception());
 
             //Act and Assert
-            Exception ex = await Assert.ThrowsAsync<Exception>(async () => await accountService.Delete(It.IsAny<double>()));
+            Exception ex = await Assert.ThrowsAsync<Exception>(async () => await accountService.Delete(1));
         }
 
         [Fact]
@@ -190,11 +225,11 @@ namespace BMS.Services.Test
                 Balance = 100
             };
 
-            data.Setup(x => x.Update(It.IsAny<Account>(), It.IsAny<double>()))
+            data.Setup(x => x.Update(It.IsAny<Account>(), It.IsAny<long>()))
                .Returns(account); ;
 
             //Act
-            var result = await accountService.Update(It.IsAny<Account>(), It.IsAny<double>());
+            var result = await accountService.Update(It.IsAny<Account>(), It.IsAny<long>());
             //Assert
             Assert.NotNull(result);
             Assert.Equal(result.AccountNumber, 12345);
@@ -204,11 +239,11 @@ namespace BMS.Services.Test
         public async Task Update_Throw_Exception_When_Data_Throw_Exception()
         {
             //Arrange
-            data.Setup(x => x.Update(It.IsAny<Account>(), It.IsAny<double>()))
+            data.Setup(x => x.Update(It.IsAny<Account>(), It.IsAny<long>()))
                .Throws(new Exception());
 
             //Act and Assert
-            Exception ex = await Assert.ThrowsAsync<Exception>(async () => await accountService.Update(It.IsAny<Account>(), It.IsAny<double>()));
+            Exception ex = await Assert.ThrowsAsync<Exception>(async () => await accountService.Update(It.IsAny<Account>(), It.IsAny<long>()));
         }
 
         private void setupData()
@@ -239,7 +274,7 @@ namespace BMS.Services.Test
                 Balance = 100
             };
 
-            data.Setup(x => x.Insert(It.IsAny<Account>(), It.IsAny<double>()))
+            data.Setup(x => x.Insert(It.IsAny<Account>(), It.IsAny<long>()))
                 .Returns(account);
         }
 

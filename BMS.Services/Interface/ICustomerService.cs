@@ -14,9 +14,9 @@ namespace BMS.Services.Interface
 
         Task<Customer> Create(CustomerDetail customer);
 
-        Task<Customer> Get(double Id);
+        Task<Customer> Get(long Id);
 
-        Task<bool> Delete(double Id);
+        Task<bool> Delete(long Id);
 
         bool ValidUser(string username, string password);
     }

@@ -11,42 +11,42 @@ namespace BMS.Data
 {
     public class BMDDatabase
     {
-        public static Dictionary<double, Customer> Customers { get; set; }
+        public static Dictionary<long, Customer> Customers { get; set; }
 
-        public static Dictionary<double, Account> Accounts { get; set; }
+        public static Dictionary<long, Account> Accounts { get; set; }
 
-        public static Dictionary<double, Branch> Branches { get; set; }
+        public static Dictionary<long, Branch> Branches { get; set; }
 
-        public static Dictionary<double, Transaction> Transactions { get; set; }
+        public static Dictionary<long, Transaction> Transactions { get; set; }
 
-        public static Dictionary<double, FailedTransactionLog> FailedTransactionLog { get; set; }
+        public static Dictionary<long, FailedTransactionLog> FailedTransactionLog { get; set; }
 
         static BMDDatabase()
         {
             if (Customers == null)
             {
-                Customers = new Dictionary<double, Customer>();
+                Customers = new Dictionary<long, Customer>();
             }
 
             InitalBranches();
 
             if (Accounts == null)
             {
-                Accounts = new Dictionary<double, Account>();
+                Accounts = new Dictionary<long, Account>();
             }
 
             if (Transactions == null)
             {
-                Transactions = new Dictionary<double, Transaction>();
+                Transactions = new Dictionary<long, Transaction>();
             }
 
             if (FailedTransactionLog == null)
             {
-                FailedTransactionLog = new Dictionary<double, FailedTransactionLog>();
+                FailedTransactionLog = new Dictionary<long, FailedTransactionLog>();
             }
         }
 
-        public static Dictionary<double,T> GetTable<T>()
+        public static Dictionary<long,T> GetTable<T>()
         {
            var obj = Activator.CreateInstance<T>();
            
@@ -54,30 +54,30 @@ namespace BMS.Data
             {
                 case Customer customer:
                     var json = JsonConvert.SerializeObject(BMDDatabase.Customers);
-                    var dictionary = JsonConvert.DeserializeObject<Dictionary<double, T>>(json);
+                    var dictionary = JsonConvert.DeserializeObject<Dictionary<long, T>>(json);
                     return dictionary;
                 case Account account:
                     var jsonAccount = JsonConvert.SerializeObject(BMDDatabase.Accounts);
-                    var dictionaryAccount = JsonConvert.DeserializeObject<Dictionary<double, T>>(jsonAccount);
+                    var dictionaryAccount = JsonConvert.DeserializeObject<Dictionary<long, T>>(jsonAccount);
                     return dictionaryAccount;
                 case Branch branch:
                     var jsonBranch = JsonConvert.SerializeObject(BMDDatabase.Branches);
-                    var dictionaryBranch = JsonConvert.DeserializeObject<Dictionary<double, T>>(jsonBranch);
+                    var dictionaryBranch = JsonConvert.DeserializeObject<Dictionary<long, T>>(jsonBranch);
                     return dictionaryBranch;
                 case Transaction transaction:
                     var jsonTransaction = JsonConvert.SerializeObject(BMDDatabase.Transactions);
-                    var dictionaryTransaction = JsonConvert.DeserializeObject<Dictionary<double, T>>(jsonTransaction);
+                    var dictionaryTransaction = JsonConvert.DeserializeObject<Dictionary<long, T>>(jsonTransaction);
                     return dictionaryTransaction;
                 case FailedTransactionLog transactionLog:
                     var jsonFailedTransactionLog = JsonConvert.SerializeObject(BMDDatabase.FailedTransactionLog);
-                    var dictionaryFailedTransactionLog = JsonConvert.DeserializeObject<Dictionary<double, T>>(jsonFailedTransactionLog);
+                    var dictionaryFailedTransactionLog = JsonConvert.DeserializeObject<Dictionary<long, T>>(jsonFailedTransactionLog);
                     return dictionaryFailedTransactionLog;
                 default:
                     return null;
             }
         }
 
-        public static T Add<T>(T entity, double id)
+        public static T Add<T>(T entity, long id)
         {
             //var obj = Activator.CreateInstance<T>();
 
@@ -106,7 +106,7 @@ namespace BMS.Data
             return entity;
         }
 
-        public static T Update<T>(T entity, double id)
+        public static T Update<T>(T entity, long id)
         {
             //var obj = Activator.CreateInstance<T>();
 
@@ -135,7 +135,7 @@ namespace BMS.Data
             return entity;
         }
 
-        public static bool Remove<T>(double id)
+        public static bool Remove<T>(long id)
         {
             var obj = Activator.CreateInstance<T>();
 
@@ -177,7 +177,7 @@ namespace BMS.Data
         {
             if (Branches == null)
             {
-                Branches = new Dictionary<double, Branch>();
+                Branches = new Dictionary<long, Branch>();
             }
 
             if (Branches.Count == 0)

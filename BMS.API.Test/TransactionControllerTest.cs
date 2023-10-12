@@ -26,7 +26,23 @@ namespace BMS.API.Test
         }
 
         [Fact]
-        public async Task Withdraw_Account_When_Return_Data_From_Transactionervice()
+        public async Task Withdraw_When_TransactionDetail_ISNULL_THEN_Throw_BadRequest()
+        {
+            //Arrange && Act
+            IActionResult actionResult = await transaction.Withdraw(null);
+            var contentResult = actionResult as ObjectResult;
+
+            //Assert
+            Assert.NotNull(contentResult);
+            Assert.NotNull(contentResult.Value);
+            int exceptedStatusCode = 400;
+            string exception = "Please Provide Transaction Details!";
+            Assert.Equal(contentResult.Value.ToString(), exception);
+            Assert.Equal(contentResult.StatusCode, exceptedStatusCode);
+        }
+
+        [Fact]
+        public async Task Withdraw_Account_When_Return_Data_From_TransactionSeeervice()
         {
             //Arrange
             TransactionWithdrawDetail transctionDetail = new TransactionWithdrawDetail();
@@ -45,7 +61,7 @@ namespace BMS.API.Test
                .ReturnsAsync(response);
 
             //Act
-            IActionResult actionResult = await transaction.Withdraw(It.IsAny<TransactionWithdrawDetail>());
+            IActionResult actionResult = await transaction.Withdraw(new TransactionWithdrawDetail());
             var contentResult = actionResult as ObjectResult;
 
             //Assert
@@ -64,7 +80,7 @@ namespace BMS.API.Test
                .ThrowsAsync(new Exception());
 
             //Act
-            IActionResult actionResult = await transaction.Withdraw(It.IsAny<TransactionWithdrawDetail>());
+            IActionResult actionResult = await transaction.Withdraw(new TransactionWithdrawDetail());
             var contentResult = actionResult as ObjectResult;
 
             //Assert
@@ -72,6 +88,22 @@ namespace BMS.API.Test
             Assert.NotNull(contentResult.Value);
             int exceptedStatusCode = 500;
             string exception = "Error while processing data!";
+            Assert.Equal(contentResult.Value.ToString(), exception);
+            Assert.Equal(contentResult.StatusCode, exceptedStatusCode);
+        }
+
+        [Fact]
+        public async Task Deposit_When_TransactionDetail_ISNULL_THEN_Throw_BadRequest()
+        {
+            //Arrange && Act
+            IActionResult actionResult = await transaction.Deposit(null);
+            var contentResult = actionResult as ObjectResult;
+
+            //Assert
+            Assert.NotNull(contentResult);
+            Assert.NotNull(contentResult.Value);
+            int exceptedStatusCode = 400;
+            string exception = "Please Provide Transaction Details!";
             Assert.Equal(contentResult.Value.ToString(), exception);
             Assert.Equal(contentResult.StatusCode, exceptedStatusCode);
         }
@@ -94,7 +126,7 @@ namespace BMS.API.Test
                .ReturnsAsync(response);
 
             //Act
-            IActionResult actionResult = await transaction.Deposit(It.IsAny<TransactionDetail>());
+            IActionResult actionResult = await transaction.Deposit(new TransactionDetail());
             var contentResult = actionResult as ObjectResult;
 
             //Assert
@@ -113,7 +145,7 @@ namespace BMS.API.Test
                .ThrowsAsync(new Exception());
 
             //Act
-            IActionResult actionResult = await transaction.Deposit(It.IsAny<TransactionDetail>());
+            IActionResult actionResult = await transaction.Deposit(new TransactionDetail());
             var contentResult = actionResult as ObjectResult;
 
             //Assert

@@ -1,4 +1,5 @@
-﻿using BMS.Models.Domain;
+﻿using BMS.Models.Constant;
+using BMS.Models.Domain;
 using BMS.Models.DTO;
 using BMS.Services.Interface;
 using Microsoft.AspNetCore.Http;
@@ -36,18 +37,24 @@ namespace BMS.API.Controllers
         /// <returns></returns>
         [SwaggerResponse((int)HttpStatusCode.OK, "Account", typeof(AccountResponse))]
         [SwaggerResponse((int)HttpStatusCode.InternalServerError, Type = typeof(string))]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(string))]
         [HttpPost]
         [Route("/api/Create")]
         public async Task<IActionResult> Create([FromBody]AccountDetail accountDetail)
         {
             try
             {
+                if (accountDetail == null)
+                {
+                    return BadRequest(Constant.Please_Provide_AccountDetail);
+                }
+
                 return this.Ok(await this._account.Create(accountDetail));
             }
             catch (Exception ex)
             {
                 this._logger.LogError($"Error in Create :- {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error while processing data!");
+                return StatusCode(StatusCodes.Status500InternalServerError, Constant.Error_Processing);
             }
         }
 
@@ -58,21 +65,26 @@ namespace BMS.API.Controllers
         [SwaggerResponse((int)HttpStatusCode.InternalServerError, Type = typeof(string))]
         [HttpGet]
         [Route("/api/Get")]
-        public async Task<IActionResult> Get(double accountNumber)
+        public async Task<IActionResult> Get(long accountNumber)
         {
             try
             {
+                if (accountNumber <=0)
+                {
+                    return BadRequest(Constant.Please_Provide_Valid_Account);
+                }
+
                 var response = await this._account.Get(accountNumber);
 
                 if (response == null)
-                    return this.Ok("No Account exists for given account number!");
+                    return this.Ok(Constant.No_Account_Exist);
 
                 return this.Ok(response);
             }
             catch (Exception ex)
             {
                 this._logger.LogError($"Error in Get :- {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error while processing data!");
+                return StatusCode(StatusCodes.Status500InternalServerError, Constant.Error_Processing);
             }
         }
 
@@ -83,21 +95,26 @@ namespace BMS.API.Controllers
         [SwaggerResponse((int)HttpStatusCode.InternalServerError, Type = typeof(string))]
         [HttpDelete]
         [Route("/api/Delete")]
-        public async Task<IActionResult> Delete(double accountNumber)
+        public async Task<IActionResult> Delete(long accountNumber)
         {
             try
             {
+                if (accountNumber <= 0)
+                {
+                    return BadRequest(Constant.Please_Provide_Valid_Account);
+                }
+
                 var response = await this._account.Delete(accountNumber);
 
                 if (!response)
-                    return this.Ok("No Account exists for given account number!");
+                    return this.Ok(Constant.No_Account_Exist);
 
-                return this.Ok("Deleted Successfully");
+                return this.Ok(Constant.Deleted_Successfully);
             }
             catch (Exception ex)
             {
                 this._logger.LogError($"Error in Delete :- {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error while processing data!");
+                return StatusCode(StatusCodes.Status500InternalServerError, Constant.Error_Processing);
             }
         }
 

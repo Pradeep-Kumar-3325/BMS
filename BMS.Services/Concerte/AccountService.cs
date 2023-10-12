@@ -1,5 +1,6 @@
 ﻿using BMS.Data.Concrete;
 using BMS.Data.Interface;
+using BMS.Models.Constant;
 using BMS.Models.Domain;
 using BMS.Models.DTO;
 using BMS.Models.Enum;
@@ -7,6 +8,7 @@ using BMS.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Headers;
+using System.Security.Principal;
 
 namespace BMS.Services.Concerte
 {
@@ -15,7 +17,7 @@ namespace BMS.Services.Concerte
         private readonly ILogger<AccountService> _logger;
         private readonly ICustomerService customerService;
         private readonly IBranchService branchService;
-        private IRepository<Account> repoAccount;
+        private readonly IRepository<Account> repoAccount;
         private readonly IConfiguration configuration;
 
         // D :- Dependency Inversion  of SOLID :- by passing dependency from constructor
@@ -39,14 +41,24 @@ namespace BMS.Services.Concerte
         {
             try
             {
+                if (accountDetail.Customer ==  null)
+                {
+                  throw new ArgumentNullException(nameof(accountDetail.Customer));
+                }
+
+                if (accountDetail.BranchDetail == null)
+                {
+                    throw new ArgumentNullException(nameof(accountDetail.BranchDetail));
+                }
+
                 AccountResponse response = new AccountResponse();
                 var minAmount = configuration["Rule:MinAmount"];
                 if (string.IsNullOrEmpty(minAmount))
-                    _logger.LogInformation($"Configuration of MinAmount is missing");
+                    _logger.LogInformation(Constant.MinAmount_Missing);
 
                 if (accountDetail.Balance < Convert.ToDecimal(minAmount))
                 {
-                    response.ValidationMessage = "An account cannot have less than $100 at any time in an account!";
+                    response.ValidationMessage = $"An account cannot have less than ${ minAmount } at any time in an account!";
                     return response;
                     //throw new Exception("An account cannot have less than $100 at any time in an account!");
                 }
@@ -58,11 +70,12 @@ namespace BMS.Services.Concerte
 
                 if (branch == null)
                 {
-                    response.ValidationMessage = "Not able to find Branch! Please enter sbi as bank name and crpf camp as branch name";
+                    response.ValidationMessage =Constant.Branch_Missing;
                     return response;
                     //throw new Exception("An account cannot have less than $100 at any time in an account!");
                 }
 
+                // use Mapper
                 var account = new Account
                 {
                     AccountNumber = new Random().Next(0, Int32.MaxValue),
@@ -89,11 +102,15 @@ namespace BMS.Services.Concerte
         /// </summary>
         /// <param name="accountNumber"></param>
         /// <returns></returns>
-        public async Task<Account> Get(double accountNumber) // use camelCase for paremetr naming
+        public async Task<Account> Get(long accountNumber) // use camelCase for paremetr naming
         {
             try
             {
-                var account = repoAccount.Get(accountNumber);
+                Account account = null;
+                if (accountNumber > 0)
+                {
+                    account = repoAccount.Get(accountNumber);
+                }
 
                 return await Task.FromResult(account);
             }
@@ -103,10 +120,12 @@ namespace BMS.Services.Concerte
                 throw;
             }
         }
-        public async Task<bool> Delete(double accountNumber)
+        public async Task<bool> Delete(long accountNumber)
         {
             try
             {
+                if (accountNumber <= 0) return false;
+
                 var deleted = repoAccount.Delete(accountNumber);
 
                 return await Task.FromResult(deleted);
@@ -118,7 +137,7 @@ namespace BMS.Services.Concerte
             }
         }
 
-        public async Task<Account> Update(Account account, double accountNumber)
+        public async Task<Account> Update(Account account, long accountNumber)
         {
             try
             {

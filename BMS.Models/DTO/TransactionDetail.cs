@@ -20,6 +20,6 @@ namespace BMS.Models.DTO
         /// Account Number from which amount will be deducted
         /// </summary>
         [Required(ErrorMessage = "Account Number field is required.")]
-        public double AccountNumber { get; set; }
+        public long AccountNumber { get; set; }
     }
 }

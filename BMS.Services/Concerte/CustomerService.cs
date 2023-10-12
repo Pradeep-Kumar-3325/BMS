@@ -1,5 +1,6 @@
 ﻿using BMS.Data.Concrete;
 using BMS.Data.Interface;
+using BMS.Models.Constant;
 using BMS.Models.Domain;
 using BMS.Models.DTO;
 using BMS.Services.Interface;
@@ -10,7 +11,7 @@ namespace BMS.Services.Concerte
     public class CustomerService : ICustomerService
     {
         private readonly ILogger<CustomerService> _logger;
-        private IRepository<Customer> repoCustomer;
+        private readonly IRepository<Customer> repoCustomer;
         public CustomerService(ILogger<CustomerService> logger, IRepository<Customer> repoCustomer)
         {
             _logger = logger;
@@ -29,7 +30,7 @@ namespace BMS.Services.Concerte
                     return customer;
                 }
 
-                customer = customers.Where(x => x.Value.UserName.ToLower() == customerDetail.UserName.ToLower() && x.Value.Email.ToLower() == customerDetail.Email.ToLower()).Select(x => x.Value).FirstOrDefault();
+                customer = customers.Where(x => x.Value.UserName.ToLower() == customerDetail.UserName.ToLower() && x.Value.Email.ToLower() == customerDetail.Email.ToLower()).Select(x => x.Value).SingleOrDefault();
                 if (customer != null)
                 {
                     return await Task.FromResult(customer);
@@ -47,7 +48,7 @@ namespace BMS.Services.Concerte
 
 
         }
-        public async Task<Customer> Get(double Id)
+        public async Task<Customer> Get(long Id)
         {
             try
             {
@@ -61,7 +62,7 @@ namespace BMS.Services.Concerte
                 throw;
             }
         }
-        public async Task<bool> Delete(double Id)
+        public async Task<bool> Delete(long Id)
         {
             try
             {
@@ -85,7 +86,7 @@ namespace BMS.Services.Concerte
                 var selectCustomers = customers.Where(x => x.Value.UserName.ToLower() == customerDetail.UserName.ToLower() && x.Value.Email.ToLower() == customerDetail.Email.ToLower()).Select(x => x.Value).ToList();
                 if (selectCustomers.Count >= 1)
                 {
-                    throw new Exception("There is already customer for given username and email!");
+                    throw new Exception(Constant.Customer_Already_Exist);
                 }
 
                 var customer = new Customer
@@ -93,7 +94,7 @@ namespace BMS.Services.Concerte
                     CustomerId = new Random().Next(0, Int32.MaxValue),
                     UserName = customerDetail.UserName,
                     Email = customerDetail.Email,
-                    Password = "Welcome@123",
+                    Password = Constant.Password,
                     Phone = customerDetail.Phone,
                     RegistrationDate = DateTime.Now,
                     Address = customerDetail.Address

@@ -12,7 +12,7 @@ namespace BMS.Models.Domain
         /// <summary>
         /// Auto Generated for sepecific transaction
         /// </summary>
-        public double TransactionId { get; set; }
+        public long TransactionId { get; set; }
 
         /// <summary>
         /// type would be 0 = withdraw, 1= deposite
@@ -32,6 +32,6 @@ namespace BMS.Models.Domain
         /// <summary>
         /// Account Number from which amount will be deducted
         /// </summary>
-        public double AccountNumber { get; set; }
+        public long AccountNumber { get; set; }
     }
 }

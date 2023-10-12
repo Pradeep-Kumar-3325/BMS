@@ -5,11 +5,11 @@ namespace BMS.Models.Domain
     public class Account
     {
         // Account Number
-        public double AccountNumber { get; set; }
+        public long AccountNumber { get; set; }
 
-        public double CustomerId { get; set; }
+        public long CustomerId { get; set; }
 
-        public double BranchId { get; set; }
+        public long BranchId { get; set; }
 
         public decimal Balance { get; set; }
 

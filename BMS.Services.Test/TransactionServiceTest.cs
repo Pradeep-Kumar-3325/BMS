@@ -102,14 +102,14 @@ namespace BMS.Services.Test
 
             Account account = null;
 
-            accountService.Setup(x => x.Get(It.IsAny<double>()))
+            accountService.Setup(x => x.Get(123))
                 .ReturnsAsync(account);
 
             //Act
             var result = await transactionService.Withdraw(detail);
             //Assert
             Assert.NotNull(result);
-            Assert.Equal("An account does not exist!", result.ValidationMessage);
+            Assert.Equal("No Account exists for given account number!", result.ValidationMessage);
         }
 
         [Fact]
@@ -127,7 +127,7 @@ namespace BMS.Services.Test
                 Balance = 100
             };
 
-            accountService.Setup(x => x.Get(It.IsAny<double>()))
+            accountService.Setup(x => x.Get(It.IsAny<long>()))
                 .ReturnsAsync(account);
 
             TransactionWithdrawDetail detail = new TransactionWithdrawDetail
@@ -159,7 +159,7 @@ namespace BMS.Services.Test
                 Balance = 10000
             };
 
-            accountService.Setup(x => x.Get(It.IsAny<double>()))
+            accountService.Setup(x => x.Get(It.IsAny<long>()))
                 .ReturnsAsync(account);
 
             TransactionWithdrawDetail detail = new TransactionWithdrawDetail
@@ -226,14 +226,14 @@ namespace BMS.Services.Test
 
             Account account = null;
 
-            accountService.Setup(x => x.Get(It.IsAny<double>()))
+            accountService.Setup(x => x.Get(It.IsAny<long>()))
                 .ReturnsAsync(account);
 
             //Act
             var result = await transactionService.Deposit(detail);
             //Assert
             Assert.NotNull(result);
-            Assert.Equal("An account does not exist!", result.ValidationMessage);
+            Assert.Equal("No Account exists for given account number!", result.ValidationMessage);
         }
        
         [Fact]
@@ -248,7 +248,7 @@ namespace BMS.Services.Test
                 Balance = 10000
             };
 
-            accountService.Setup(x => x.Get(It.IsAny<double>()))
+            accountService.Setup(x => x.Get(It.IsAny<long>()))
                 .ReturnsAsync(account);
 
             TransactionWithdrawDetail detail = new TransactionWithdrawDetail
@@ -290,7 +290,7 @@ namespace BMS.Services.Test
                 Balance=10000
             };
 
-            accountService.Setup(x => x.Get(It.IsAny<double>()))
+            accountService.Setup(x => x.Get(It.IsAny<long>()))
                 .ReturnsAsync(account);
 
             Transaction transaction = new Transaction
@@ -300,7 +300,7 @@ namespace BMS.Services.Test
                 Amount = 100
             };
 
-            data.Setup(x => x.Insert(It.IsAny<Transaction>(), It.IsAny<double>()))
+            data.Setup(x => x.Insert(It.IsAny<Transaction>(), It.IsAny<long>()))
                 .Returns(transaction);
         }
 
@@ -312,7 +312,7 @@ namespace BMS.Services.Test
                 Balance = 10000
             };
 
-            accountService.Setup(x => x.Get(It.IsAny<double>()))
+            accountService.Setup(x => x.Get(It.IsAny<long>()))
                 .ReturnsAsync(account);
 
             Transaction transaction = new Transaction
@@ -322,7 +322,7 @@ namespace BMS.Services.Test
                 Amount = 100
             };
 
-            data.Setup(x => x.Insert(It.IsAny<Transaction>(), It.IsAny<double>()))
+            data.Setup(x => x.Insert(It.IsAny<Transaction>(), It.IsAny<long>()))
                 .Returns(transaction);
         }
     }

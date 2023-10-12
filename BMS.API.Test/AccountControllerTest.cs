@@ -5,6 +5,7 @@ using BMS.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using System.Transactions;
 
 namespace BMS.API.Test
 {
@@ -23,6 +24,22 @@ namespace BMS.API.Test
             accountService = new Mock<IAccountService>();
 
             account = new AccountController(logger.Object, accountService.Object);
+        }
+
+        [Fact]
+        public async Task Create_When_TransactionDetail_ISNULL_THEN_Throw_BadRequest()
+        {
+            //Arrange && Act
+            IActionResult actionResult = await account.Create(null);
+            var contentResult = actionResult as ObjectResult;
+
+            //Assert
+            Assert.NotNull(contentResult);
+            Assert.NotNull(contentResult.Value);
+            int exceptedStatusCode = 400;
+            string exception = "Please Provide AccountDetail!";
+            Assert.Equal(contentResult.Value.ToString(), exception);
+            Assert.Equal(contentResult.StatusCode, exceptedStatusCode);
         }
 
         [Fact]
@@ -65,7 +82,7 @@ namespace BMS.API.Test
                .ThrowsAsync(new Exception());
 
             //Act
-            IActionResult actionResult = await account.Create(It.IsAny<AccountDetail>());
+            IActionResult actionResult = await account.Create(new AccountDetail());
             var contentResult = actionResult as ObjectResult;
 
             //Assert
@@ -73,6 +90,22 @@ namespace BMS.API.Test
             Assert.NotNull(contentResult.Value);
             int exceptedStatusCode = 500;
             string exception = "Error while processing data!";
+            Assert.Equal(contentResult.Value.ToString(), exception);
+            Assert.Equal(contentResult.StatusCode, exceptedStatusCode);
+        }
+
+        [Fact]
+        public async Task Get_When_TransactionDetail_ISNULL_THEN_Throw_BadRequest()
+        {
+            //Arrange && Act
+            IActionResult actionResult = await account.Get(0);
+            var contentResult = actionResult as ObjectResult;
+
+            //Assert
+            Assert.NotNull(contentResult);
+            Assert.NotNull(contentResult.Value);
+            int exceptedStatusCode = 400;
+            string exception = "Please Provide Valid Account Number!";
             Assert.Equal(contentResult.Value.ToString(), exception);
             Assert.Equal(contentResult.StatusCode, exceptedStatusCode);
         }
@@ -89,11 +122,11 @@ namespace BMS.API.Test
             };
 
 
-            accountService.Setup(x => x.Get(It.IsAny<double>()))
+            accountService.Setup(x => x.Get(It.IsAny<long>()))
                .ReturnsAsync(result);
 
             //Act
-            IActionResult actionResult = await account.Get(It.IsAny<double>());
+            IActionResult actionResult = await account.Get(1234);
             var contentResult = actionResult as ObjectResult;
 
             //Assert
@@ -109,11 +142,11 @@ namespace BMS.API.Test
         {
             //Arrange
             Account result = null;
-            accountService.Setup(x => x.Get(It.IsAny<double>()))
+            accountService.Setup(x => x.Get(It.IsAny<long>()))
                .ReturnsAsync(result);
 
             //Act
-            IActionResult actionResult = await account.Get(It.IsAny<double>());
+            IActionResult actionResult = await account.Get(123);
             var contentResult = actionResult as ObjectResult;
 
             //Assert
@@ -128,11 +161,11 @@ namespace BMS.API.Test
         public async Task Get_Throw_Exception_When_AccountService_Throw_Exception()
         {
             //Arrange
-            accountService.Setup(x => x.Get(It.IsAny<double>()))
+            accountService.Setup(x => x.Get(It.IsAny<long>()))
                .ThrowsAsync(new Exception());
 
             //Act
-            IActionResult actionResult = await account.Get(It.IsAny<double>());
+            IActionResult actionResult = await account.Get(123);
             var contentResult = actionResult as ObjectResult;
 
             //Assert
@@ -145,14 +178,30 @@ namespace BMS.API.Test
         }
 
         [Fact]
+        public async Task Delete_When_TransactionDetail_ISNULL_THEN_Throw_BadRequest()
+        {
+            //Arrange && Act
+            IActionResult actionResult = await account.Delete(0);
+            var contentResult = actionResult as ObjectResult;
+
+            //Assert
+            Assert.NotNull(contentResult);
+            Assert.NotNull(contentResult.Value);
+            int exceptedStatusCode = 400;
+            string exception = "Please Provide Valid Account Number!";
+            Assert.Equal(contentResult.Value.ToString(), exception);
+            Assert.Equal(contentResult.StatusCode, exceptedStatusCode);
+        }
+
+        [Fact]
         public async Task Delete_Account_When_Return_Data_From_AccountService()
         {
             //Arrange
-            accountService.Setup(x => x.Delete(It.IsAny<double>()))
+            accountService.Setup(x => x.Delete(123))
                .ReturnsAsync(true);
 
             //Act
-            IActionResult actionResult = await account.Delete(It.IsAny<double>());
+            IActionResult actionResult = await account.Delete(123);
             var contentResult = actionResult as ObjectResult;
 
             //Assert
@@ -167,11 +216,11 @@ namespace BMS.API.Test
         public async Task Delete_Account_When_Return_False_From_AccountService()
         {
             //Arrange
-            accountService.Setup(x => x.Delete(It.IsAny<double>()))
+            accountService.Setup(x => x.Delete(It.IsAny<long>()))
                .ReturnsAsync(false);
 
             //Act
-            IActionResult actionResult = await account.Delete(It.IsAny<double>());
+            IActionResult actionResult = await account.Delete(1);
             var contentResult = actionResult as ObjectResult;
 
             //Assert
@@ -186,11 +235,11 @@ namespace BMS.API.Test
         public async Task Delete_Throw_Exception_When_AccountService_Throw_Exception()
         {
             //Arrange
-            accountService.Setup(x => x.Delete(It.IsAny<double>()))
+            accountService.Setup(x => x.Delete(It.IsAny<long>()))
                .ThrowsAsync(new Exception());
 
             //Act
-            IActionResult actionResult = await account.Delete(It.IsAny<double>());
+            IActionResult actionResult = await account.Delete(1);
             var contentResult = actionResult as ObjectResult;
 
             //Assert
