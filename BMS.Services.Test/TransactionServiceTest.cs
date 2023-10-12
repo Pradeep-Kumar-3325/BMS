@@ -109,7 +109,7 @@ namespace BMS.Services.Test
             var result = await transactionService.Withdraw(detail);
             //Assert
             Assert.NotNull(result);
-            Assert.Equal("An account does not exist!", result.ValidationMessage);
+            Assert.Equal("No Account exists for given account number!", result.ValidationMessage);
         }
 
         [Fact]
@@ -233,7 +233,7 @@ namespace BMS.Services.Test
             var result = await transactionService.Deposit(detail);
             //Assert
             Assert.NotNull(result);
-            Assert.Equal("An account does not exist!", result.ValidationMessage);
+            Assert.Equal("No Account exists for given account number!", result.ValidationMessage);
         }
        
         [Fact]

@@ -47,6 +47,7 @@ namespace BMS.Services.Test
             {
                 Balance = 100,
                 AccountType ="Saving",
+                Customer = new CustomerDetail(),
                 BranchDetail = new BranchDetail
                 {
                     BankName = "sbi",
@@ -69,6 +70,8 @@ namespace BMS.Services.Test
             AccountDetail accountDetail = new AccountDetail
             {
                 Balance = 0,
+                Customer = new CustomerDetail(),
+                BranchDetail = new BranchDetail()
             };
 
             //Act
@@ -86,6 +89,7 @@ namespace BMS.Services.Test
             AccountDetail accountDetail = new AccountDetail
             {
                 Balance = 100,
+                Customer = new CustomerDetail(),
                 BranchDetail = new BranchDetail
                 {
                     BankName = "sbi",
@@ -109,14 +113,26 @@ namespace BMS.Services.Test
             AccountDetail accountDetail = new AccountDetail
             {
                 Balance = 100,
+                Customer = new CustomerDetail(),
             };
-            Customer customer = null;
-
-            customerService.Setup(x => x.CreateOrGet(It.IsAny<CustomerDetail>()))
-                .ReturnsAsync(customer);
 
             //Act and Assert
-            Exception ex = await Assert.ThrowsAsync<System.NullReferenceException>(async () => await accountService.Create(accountDetail));
+            Exception ex = await Assert.ThrowsAsync<System.ArgumentNullException>(async () => await accountService.Create(accountDetail));
+        }
+
+        [Fact]
+        public async Task Create_Throw_Exception_When_CustomerDetail_Missing()
+        {
+            //Arrange
+            config.Setup(x => x["Rule:MinAmount"]).Returns("100");
+
+            AccountDetail accountDetail = new AccountDetail
+            {
+                Balance = 100,
+            };
+
+            //Act and Assert
+            Exception ex = await Assert.ThrowsAsync<System.ArgumentNullException>(async () => await accountService.Create(accountDetail));
         }
 
         [Fact]
@@ -135,10 +151,19 @@ namespace BMS.Services.Test
                .Returns(account); ;
 
             //Act
-            var result = await accountService.Get(It.IsAny<long>());
+            var result = await accountService.Get(1);
             //Assert
             Assert.NotNull(result);
             Assert.Equal(result.AccountNumber, 12345);
+        }
+
+        [Fact]
+        public async Task Get_Account_When_NotValid_AccountNumber()
+        {
+            //Act
+            var result = await accountService.Get(0);
+            //Assert
+            Assert.Null(result);
         }
 
         [Fact]
@@ -149,7 +174,7 @@ namespace BMS.Services.Test
                .Throws(new Exception());
 
             //Act and Assert
-            Exception ex = await Assert.ThrowsAsync<Exception>(async () => await accountService.Get(It.IsAny<long>()));
+            Exception ex = await Assert.ThrowsAsync<Exception>(async () => await accountService.Get(1));
         }
 
         [Fact]
@@ -161,11 +186,21 @@ namespace BMS.Services.Test
                .Returns(true);
 
             //Act
-            var result = await accountService.Delete(It.IsAny<long>());
+            var result = await accountService.Delete(1);
             //Assert
             Assert.NotNull(result);
             Assert.Equal(result, true);
         }
+
+        [Fact]
+        public async Task Delete_Account_When_NotValid_AccountNumber()
+        {
+            //Act
+            var result = await accountService.Delete(0);
+            //Assert
+            Assert.False(result);
+        }
+
 
         [Fact]
         public async Task Delete_Throw_Exception_When_Data_Throw_Exception()
@@ -175,7 +210,7 @@ namespace BMS.Services.Test
                .Throws(new Exception());
 
             //Act and Assert
-            Exception ex = await Assert.ThrowsAsync<Exception>(async () => await accountService.Delete(It.IsAny<long>()));
+            Exception ex = await Assert.ThrowsAsync<Exception>(async () => await accountService.Delete(1));
         }
 
         [Fact]
