@@ -36,22 +36,24 @@ namespace BMS.Services.Concerte
         /// </summary>
         /// <param name="transactionDetail"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public async Task<Transaction> Deposit(TransactionDetail transactionDetail)
+        /// <exception cref="Exception"></exception>
+        public async Task<TransactionResponse> Deposit(TransactionDetail transactionDetail)
         {
             Transaction createdTransaction = null;
             try
             {
+                TransactionResponse response = new TransactionResponse();
                 var account = await accountService.Get(transactionDetail.AccountNumber);
 
                 if (account == null)
                 {
-                    throw new Exception("An account does not exist!");
+                    response.ValidationMessage = "An account does not exist!";
+                    return response;
                 }
 
-                if (!ValidateDeposit(account, transactionDetail))
+                if (!ValidateDeposit(account, transactionDetail, response))
                 {
-                    throw new Exception("Error wil Withdraw!");
+                    return response;
                 }
 
                 decimal finalAmount = account.Balance + transactionDetail.Amount;
@@ -64,7 +66,9 @@ namespace BMS.Services.Concerte
                     await accountService.Update(account, transactionDetail.AccountNumber);
                 }
 
-                return await Task.FromResult(createdTransaction);
+                response.Transaction = createdTransaction;
+
+                return await Task.FromResult(response);
             }
             catch (Exception ex)
             {
@@ -97,43 +101,38 @@ namespace BMS.Services.Concerte
         /// </summary>
         /// <param name="transactionDetail"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public async Task<Transaction> Withdraw(TransactionWithdrawDetail transactionDetail)
+        /// <exception cref="Exception"></exception>
+        public async Task<TransactionResponse> Withdraw(TransactionWithdrawDetail transactionDetail)
         {
             Transaction createdTransaction = null;
             try
             {
+                TransactionResponse response = new TransactionResponse();
+
                 var vaildUser = this.customerService.ValidUser(transactionDetail.UserName, transactionDetail.Password);
 
                 if(!vaildUser)
                 {
-                    throw new Exception("User is not vaild!");
+                    response.ValidationMessage = "User Name is not vaild! Please enter Welcome@123 in password";
+                    return response;
+                    //throw new Exception("User is not vaild!");
                 }
 
                 var account = await accountService.Get(transactionDetail.AccountNumber);
 
                 if (account == null)
                 {
-                    throw new Exception("An account does not exist!");
+                    response.ValidationMessage = "An account does not exist!";
+                    return response;
                 }
 
-                if (!ValidateWithdraw(account, transactionDetail))
+                if (!ValidateWithdraw(account, transactionDetail, response))
                 {
-                    throw new Exception("Error in Withdraw!");
+                    return response;
+                   // throw new Exception("Error in Withdraw!");
                 }
 
                 decimal finalAmount = account.Balance - transactionDetail.Amount;
-
-                //var transaction = new Transaction
-                //{
-                //    TransactionId = new Random().Next(0, Int32.MaxValue),
-                //    AccountNumber = transactionDetail.AccountNumber,
-                //    Amount = transactionDetail.Amount,
-                //    Type = TransactionType.Withdraw,
-                //    Datetime = DateTime.Now
-                //};
-
-                //var createdTransaction = this.repoTransaction.Insert(transaction, transaction.TransactionId);
 
                 createdTransaction = this.CreateTransaction(transactionDetail, TransactionType.Withdraw);
 
@@ -143,7 +142,9 @@ namespace BMS.Services.Concerte
                     await accountService.Update(account, transactionDetail.AccountNumber);
                 }
 
-                return await Task.FromResult(createdTransaction);
+                response.Transaction = createdTransaction;
+
+                return await Task.FromResult(response);
             }
             catch (Exception ex)
             {
@@ -187,30 +188,46 @@ namespace BMS.Services.Concerte
             return createdTransaction;
         }
 
-        private bool ValidateWithdraw(Account account, TransactionWithdrawDetail transactionDetail)
+        private bool ValidateWithdraw(Account account, TransactionWithdrawDetail transactionDetail, TransactionResponse response)
         {
             try
             {
+                string message = string.Empty;
                 decimal finalAmount = account.Balance - transactionDetail.Amount;
 
                 var minAmount = configuration["Rule:MinAmount"];
                 if (string.IsNullOrEmpty(minAmount))
-                    _logger.LogInformation($"Configuration of MinAmount is missing");
+                {
+                    message = $"Configuration of MinAmount is missing";
+                    _logger.LogError(message);
+                    throw new Exception(message);
+
+                }
 
                 if (finalAmount < Convert.ToDecimal(minAmount))
                 {
-                    throw new Exception($"An account cannot have less than {minAmount} at any time in an account!");
+                     message = $"An account cannot have less than {minAmount} at any time in an account!";
+                    _logger.LogError(message);
+                    response.ValidationMessage = message;
+                    return false;
                 }
 
                 var minPercent = configuration["Rule:MinPercent"];
                 if (string.IsNullOrEmpty(minPercent))
-                    _logger.LogInformation($"Configuration of MinPercent is missing");
+                {
+                    message = $"Configuration of MinPercent is missing";
+                    _logger.LogError(message);
+                    throw new Exception(message);
+                }
 
                 decimal amountpercent = (Convert.ToDecimal(minPercent) / 100) * account.Balance;
 
                 if (transactionDetail.Amount > amountpercent)
                 {
-                    throw new Exception($"cannot withdraw more than {minPercent} % of their total balance from an account in a single transaction");
+                     message = $"Cannot withdraw more than {minPercent} % of their total balance from an account in a single transaction";
+                    _logger.LogError(message);
+                    response.ValidationMessage = message;
+                    return false;
                 }
 
             }
@@ -223,28 +240,25 @@ namespace BMS.Services.Concerte
             return true;
         }
 
-        private bool ValidateDeposit(Account account, TransactionDetail transactionDetail)
+        private bool ValidateDeposit(Account account, TransactionDetail transactionDetail, TransactionResponse response)
         {
             try
             {
-                decimal finalAmount = account.Balance - transactionDetail.Amount;
-
-                var minAmount = configuration["Rule:MinAmount"];
-                if (string.IsNullOrEmpty(minAmount))
-                    _logger.LogInformation($"Configuration of MinAmount is missing");
-
-                if (finalAmount < Convert.ToDecimal(minAmount))
-                {
-                    throw new Exception($"An account cannot have less than {minAmount} at any time in an account!");
-                }
-
+                string message = string.Empty;
                 var maxDeposit = configuration["Rule:MaxDeposit"];
                 if (string.IsNullOrEmpty(maxDeposit))
-                    _logger.LogInformation($"Configuration of MaxDeposit is missing");
+                {
+                     message = $"Configuration of MaxDeposit is missing";
+                    _logger.LogError(message);
+                    throw new Exception(message);
+                }
 
                 if (transactionDetail.Amount > Convert.ToDecimal(maxDeposit))
                 {
-                    throw new Exception($"cannot withdraw more than {maxDeposit} % of their total balance from an account in a single transaction");
+                     message = $"Cannot deposit more than {maxDeposit} in a single transaction";
+                    _logger.LogError(message);
+                    response.ValidationMessage = message;
+                    return false;
                 }
 
             }

@@ -10,7 +10,7 @@ namespace BMS.Services.Interface
 {
     public interface IAccountService
     {
-        Task<Account> Create(AccountDetail accountDetail);
+        Task<AccountResponse> Create(AccountDetail accountDetail);
 
         Task<Account> Get(double accountNumber);
 

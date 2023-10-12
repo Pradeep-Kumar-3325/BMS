@@ -10,8 +10,8 @@ namespace BMS.Services.Interface
 {
     public interface ITransactionService
     {
-        Task<Transaction> Withdraw(TransactionWithdrawDetail transactionDetail);
+        Task<TransactionResponse> Withdraw(TransactionWithdrawDetail transactionDetail);
 
-        Task<Transaction> Deposit(TransactionDetail transactionDetail);
+        Task<TransactionResponse> Deposit(TransactionDetail transactionDetail);
     }
 }

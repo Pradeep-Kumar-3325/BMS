@@ -18,7 +18,7 @@ namespace BMS.Models.Domain
         // In real application, passhash
         public string Password { get; set; }
 
-        public decimal RegistrationDate { get; set; }
+        public DateTime RegistrationDate { get; set; }
 
         [Required(ErrorMessage = "The Email field is required.")]
         [EmailAddress(ErrorMessage = "The Email field is not a valid e-mail address.")]

@@ -23,12 +23,12 @@ namespace BMS.Data
 
         static BMDDatabase()
         {
-            
-
             if (Customers == null)
             {
                 Customers = new Dictionary<double, Customer>();
             }
+
+            InitalBranches();
 
             if (Accounts == null)
             {
@@ -46,14 +46,13 @@ namespace BMS.Data
             }
         }
 
-        public static Dictionary<double, T> GetTable<T>()
+        public static Dictionary<double,T> GetTable<T>()
         {
            var obj = Activator.CreateInstance<T>();
            
             switch (obj)
             {
                 case Customer customer:
-                    // return BMDDatabase.Customers as T;
                     var json = JsonConvert.SerializeObject(BMDDatabase.Customers);
                     var dictionary = JsonConvert.DeserializeObject<Dictionary<double, T>>(json);
                     return dictionary;
@@ -62,15 +61,15 @@ namespace BMS.Data
                     var dictionaryAccount = JsonConvert.DeserializeObject<Dictionary<double, T>>(jsonAccount);
                     return dictionaryAccount;
                 case Branch branch:
-                    var jsonBranch = JsonConvert.SerializeObject(BMDDatabase.Customers);
+                    var jsonBranch = JsonConvert.SerializeObject(BMDDatabase.Branches);
                     var dictionaryBranch = JsonConvert.DeserializeObject<Dictionary<double, T>>(jsonBranch);
                     return dictionaryBranch;
                 case Transaction transaction:
-                    var jsonTransaction = JsonConvert.SerializeObject(BMDDatabase.Customers);
+                    var jsonTransaction = JsonConvert.SerializeObject(BMDDatabase.Transactions);
                     var dictionaryTransaction = JsonConvert.DeserializeObject<Dictionary<double, T>>(jsonTransaction);
                     return dictionaryTransaction;
                 case FailedTransactionLog transactionLog:
-                    var jsonFailedTransactionLog = JsonConvert.SerializeObject(BMDDatabase.Customers);
+                    var jsonFailedTransactionLog = JsonConvert.SerializeObject(BMDDatabase.FailedTransactionLog);
                     var dictionaryFailedTransactionLog = JsonConvert.DeserializeObject<Dictionary<double, T>>(jsonFailedTransactionLog);
                     return dictionaryFailedTransactionLog;
                 default:
@@ -78,7 +77,103 @@ namespace BMS.Data
             }
         }
 
-        public void InitalBranches()
+        public static T Add<T>(T entity, double id)
+        {
+            //var obj = Activator.CreateInstance<T>();
+
+            switch (entity)
+            {
+                case Customer customer:
+                    BMDDatabase.Customers.Add(id, entity as Customer); 
+                    break;
+
+                case Account account:
+                    BMDDatabase.Accounts.Add(id, entity as Account);
+                    break;
+                case Branch branch:
+                    BMDDatabase.Branches.Add(id, entity as Branch);
+                    break;
+                case Transaction transaction:
+                    BMDDatabase.Transactions.Add(id, entity as Transaction);
+                    break;
+                case FailedTransactionLog transactionLog:
+                    BMDDatabase.FailedTransactionLog.Add(id, entity as FailedTransactionLog);
+                    break;
+                default:
+                    return entity;
+            }
+
+            return entity;
+        }
+
+        public static T Update<T>(T entity, double id)
+        {
+            //var obj = Activator.CreateInstance<T>();
+
+            switch (entity)
+            {
+                case Customer customer:
+                    BMDDatabase.Customers[id] = entity as Customer;
+                    break;
+
+                case Account account:
+                    BMDDatabase.Accounts[id] = entity as Account;
+                    break;
+                case Branch branch:
+                    BMDDatabase.Branches[id] =entity as Branch;
+                    break;
+                case Transaction transaction:
+                    BMDDatabase.Transactions[id] = entity as Transaction;
+                    break;
+                case FailedTransactionLog transactionLog:
+                    BMDDatabase.FailedTransactionLog[id] = entity as FailedTransactionLog;
+                    break;
+                default:
+                    return entity;
+            }
+
+            return entity;
+        }
+
+        public static bool Remove<T>(double id)
+        {
+            var obj = Activator.CreateInstance<T>();
+
+            switch (obj)
+            {
+                case Customer customer:
+                    if (!BMDDatabase.Customers.ContainsKey(id))
+                        return false;
+                    BMDDatabase.Customers.Remove(id);
+                    break;
+                case Account account:
+                    if (!BMDDatabase.Accounts.ContainsKey(id))
+                        return false;
+                    BMDDatabase.Accounts.Remove(id);
+                    break;
+                case Branch branch:
+                    if (!BMDDatabase.Branches.ContainsKey(id))
+                        return false;
+                    BMDDatabase.Branches.Remove(id);
+                    break;
+                case Transaction transaction:
+                    if (!BMDDatabase.Transactions.ContainsKey(id))
+                        return false;
+                    BMDDatabase.Transactions.Remove(id);
+                    break;
+                case FailedTransactionLog transactionLog:
+                    if (!BMDDatabase.FailedTransactionLog.ContainsKey(id))
+                        return false;
+                    BMDDatabase.FailedTransactionLog.Remove(id);
+                    break;
+                default:
+                    return false;
+            }
+
+            return true;
+        }
+
+        public static void InitalBranches()
         {
             if (Branches == null)
             {
