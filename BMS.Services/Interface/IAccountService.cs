@@ -12,10 +12,10 @@ namespace BMS.Services.Interface
     {
         Task<AccountResponse> Create(AccountDetail accountDetail);
 
-        Task<Account> Get(double accountNumber);
+        Task<Account> Get(long accountNumber);
 
-        Task<bool> Delete(double accountNumber);
+        Task<bool> Delete(long accountNumber);
 
-        Task<Account> Update(Account account, double accountNumber);
+        Task<Account> Update(Account account, long accountNumber);
     }
 }

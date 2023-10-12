@@ -131,11 +131,11 @@ namespace BMS.Services.Test
                 Balance = 100
             };
 
-            data.Setup(x => x.Get(It.IsAny<double>()))
+            data.Setup(x => x.Get(It.IsAny<long>()))
                .Returns(account); ;
 
             //Act
-            var result = await accountService.Get(It.IsAny<double>());
+            var result = await accountService.Get(It.IsAny<long>());
             //Assert
             Assert.NotNull(result);
             Assert.Equal(result.AccountNumber, 12345);
@@ -145,11 +145,11 @@ namespace BMS.Services.Test
         public async Task Get_Throw_Exception_When_Data_Throw_Exception()
         {
             //Arrange
-            data.Setup(x => x.Get(It.IsAny<double>()))
+            data.Setup(x => x.Get(It.IsAny<long>()))
                .Throws(new Exception());
 
             //Act and Assert
-            Exception ex = await Assert.ThrowsAsync<Exception>(async () => await accountService.Get(It.IsAny<double>()));
+            Exception ex = await Assert.ThrowsAsync<Exception>(async () => await accountService.Get(It.IsAny<long>()));
         }
 
         [Fact]
@@ -157,11 +157,11 @@ namespace BMS.Services.Test
         {
             //Arrange
 
-            data.Setup(x => x.Delete(It.IsAny<double>()))
+            data.Setup(x => x.Delete(It.IsAny<long>()))
                .Returns(true);
 
             //Act
-            var result = await accountService.Delete(It.IsAny<double>());
+            var result = await accountService.Delete(It.IsAny<long>());
             //Assert
             Assert.NotNull(result);
             Assert.Equal(result, true);
@@ -171,11 +171,11 @@ namespace BMS.Services.Test
         public async Task Delete_Throw_Exception_When_Data_Throw_Exception()
         {
             //Arrange
-            data.Setup(x => x.Delete(It.IsAny<double>()))
+            data.Setup(x => x.Delete(It.IsAny<long>()))
                .Throws(new Exception());
 
             //Act and Assert
-            Exception ex = await Assert.ThrowsAsync<Exception>(async () => await accountService.Delete(It.IsAny<double>()));
+            Exception ex = await Assert.ThrowsAsync<Exception>(async () => await accountService.Delete(It.IsAny<long>()));
         }
 
         [Fact]
@@ -190,11 +190,11 @@ namespace BMS.Services.Test
                 Balance = 100
             };
 
-            data.Setup(x => x.Update(It.IsAny<Account>(), It.IsAny<double>()))
+            data.Setup(x => x.Update(It.IsAny<Account>(), It.IsAny<long>()))
                .Returns(account); ;
 
             //Act
-            var result = await accountService.Update(It.IsAny<Account>(), It.IsAny<double>());
+            var result = await accountService.Update(It.IsAny<Account>(), It.IsAny<long>());
             //Assert
             Assert.NotNull(result);
             Assert.Equal(result.AccountNumber, 12345);
@@ -204,11 +204,11 @@ namespace BMS.Services.Test
         public async Task Update_Throw_Exception_When_Data_Throw_Exception()
         {
             //Arrange
-            data.Setup(x => x.Update(It.IsAny<Account>(), It.IsAny<double>()))
+            data.Setup(x => x.Update(It.IsAny<Account>(), It.IsAny<long>()))
                .Throws(new Exception());
 
             //Act and Assert
-            Exception ex = await Assert.ThrowsAsync<Exception>(async () => await accountService.Update(It.IsAny<Account>(), It.IsAny<double>()));
+            Exception ex = await Assert.ThrowsAsync<Exception>(async () => await accountService.Update(It.IsAny<Account>(), It.IsAny<long>()));
         }
 
         private void setupData()
@@ -239,7 +239,7 @@ namespace BMS.Services.Test
                 Balance = 100
             };
 
-            data.Setup(x => x.Insert(It.IsAny<Account>(), It.IsAny<double>()))
+            data.Setup(x => x.Insert(It.IsAny<Account>(), It.IsAny<long>()))
                 .Returns(account);
         }
 

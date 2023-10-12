@@ -10,7 +10,7 @@ namespace BMS.Models.Domain
 {
     public class Customer
     {
-        public double CustomerId { get; set; }
+        public long CustomerId { get; set; }
 
         [Required(ErrorMessage = "The UserName field is required.")]
         public string UserName { get; set; }

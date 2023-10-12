@@ -7,7 +7,7 @@ namespace BMS.Data.Concrete
     {
         // For Real application we should use RDMS or NOSQL.
         // The below for just assignment and for mock
-        private Dictionary<double, T> table; //Dictionary<double, T> table;
+        private Dictionary<long, T> table; //Dictionary<double, T> table;
 
         private readonly ILogger<Repository<T>> _logger;
 
@@ -16,7 +16,7 @@ namespace BMS.Data.Concrete
             this._logger = logger;
             
         }
-        public bool Delete(double id)
+        public bool Delete(long id)
         {
             try
             {
@@ -29,7 +29,8 @@ namespace BMS.Data.Concrete
                 throw;
             }
         }
-        public T Get(double id)
+
+        public T Get(long id)
         {
             try
             {
@@ -43,7 +44,7 @@ namespace BMS.Data.Concrete
             }
         }
 
-        public Dictionary<double, T> GetAll()
+        public Dictionary<long, T> GetAll()
         {
             try
             {
@@ -57,7 +58,7 @@ namespace BMS.Data.Concrete
             }
         }
 
-        public T Insert(T entity, double id)
+        public T Insert(T entity, long id)
         {
             try
             {
@@ -73,7 +74,7 @@ namespace BMS.Data.Concrete
             }
         }
 
-        public T Update(T entity, double id)
+        public T Update(T entity, long id)
         {
             try
             {

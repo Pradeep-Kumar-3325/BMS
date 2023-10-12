@@ -9,9 +9,9 @@ namespace BMS.Models.Domain
 {
     public class FailedTransactionLog
     {
-        public double FailedTransactionLogId { get; set; }
+        public long FailedTransactionLogId { get; set; }
 
-        public double TransactionId { get; set; }
+        public long TransactionId { get; set; }
 
         public string ErrorType { get; set; }
 

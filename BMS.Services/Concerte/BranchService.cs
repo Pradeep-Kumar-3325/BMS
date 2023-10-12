@@ -1,5 +1,6 @@
 ﻿using BMS.Data.Concrete;
 using BMS.Data.Interface;
+using BMS.Models.Constant;
 using BMS.Models.Domain;
 using BMS.Models.DTO;
 using BMS.Services.Interface;
@@ -15,7 +16,7 @@ namespace BMS.Services.Concerte
     public class BranchService : IBranchService
     {
         private readonly ILogger<BranchService> _logger;
-        private IRepository<Branch> repoBranch;
+        private readonly IRepository<Branch> repoBranch;
         public BranchService(ILogger<BranchService> logger, IRepository<Branch> repoBranch)
         {
             _logger = logger;
@@ -25,10 +26,10 @@ namespace BMS.Services.Concerte
         {
             try
             {
-                //Validate Address
+                //Validate Address :- No need becaue not it assignment
 
                 // Branch Name or IFSCCODE should come from outside as parameter
-                // then on the basic of this ifsccode, fetch from table or branch source from storage
+                // then on the basic of this ifsccode, fetch from table or branch source from storage 
                 var branch = new Branch
                 {
                     BranchId = new Random().Next(0, Int32.MaxValue),
@@ -47,7 +48,7 @@ namespace BMS.Services.Concerte
                 throw;
             }
         }
-        public async Task<Branch> Get(double Id)
+        public async Task<Branch> Get(long Id)
         {
             try
             {
@@ -70,13 +71,13 @@ namespace BMS.Services.Concerte
 
                 if (Branches == null)
                 {
-                    throw new Exception("There is no Branch!");
+                    throw new Exception(Constant.No_Branch);
                 }
 
                 var branches = Branches.Where(x => x.Value.Name.ToLower() == branch.ToLower() && x.Value.BankName.ToLower() == bank.ToLower()).Select(x=> x.Value).ToList();
                 if (branches.Count > 1)
                 {
-                    throw new Exception("There is more than one Branch for given branch name and bank!");
+                    throw new Exception(Constant.Branch_Already);
                 }
 
                 return await Task.FromResult(branches.SingleOrDefault());
@@ -88,7 +89,7 @@ namespace BMS.Services.Concerte
             }
         }
 
-        public async Task<bool> Delete(double Id)
+        public async Task<bool> Delete(long Id)
         {
             try
             {

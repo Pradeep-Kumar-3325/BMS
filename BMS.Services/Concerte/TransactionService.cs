@@ -1,5 +1,6 @@
 ﻿using BMS.Data.Concrete;
 using BMS.Data.Interface;
+using BMS.Models.Constant;
 using BMS.Models.Domain;
 using BMS.Models.DTO;
 using BMS.Models.Enum;
@@ -14,8 +15,8 @@ namespace BMS.Services.Concerte
         private readonly ILogger<TransactionService> _logger;
         private readonly IAccountService accountService;
         private readonly ICustomerService customerService;
-        private IRepository<Transaction> repoTransaction;
-        private IRepository<FailedTransactionLog> repoFailedTransactionLog;
+        private readonly IRepository<Transaction> repoTransaction;
+        private readonly IRepository<FailedTransactionLog> repoFailedTransactionLog;
         private readonly IConfiguration configuration;
         public TransactionService(ILogger<TransactionService> logger, IConfiguration configuration,
             IAccountService account,
@@ -43,11 +44,12 @@ namespace BMS.Services.Concerte
             try
             {
                 TransactionResponse response = new TransactionResponse();
+                // if transactionDetail.AccountNumber is null or zero then An account does not exist! will return
                 var account = await accountService.Get(transactionDetail.AccountNumber);
 
                 if (account == null)
                 {
-                    response.ValidationMessage = "An account does not exist!";
+                    response.ValidationMessage = Constant.No_Account_Exist;
                     return response;
                 }
 
@@ -89,7 +91,7 @@ namespace BMS.Services.Concerte
                         DateTime = DateTime.Now
                     };
 
-                    var createdTransactionFailed = this.repoFailedTransactionLog.Insert(transactionFailed, transactionFailed.FailedTransactionLogId);
+                    this.repoFailedTransactionLog.Insert(transactionFailed, transactionFailed.FailedTransactionLogId);
                 }
 
                 throw;
@@ -113,16 +115,17 @@ namespace BMS.Services.Concerte
 
                 if(!vaildUser)
                 {
-                    response.ValidationMessage = "User Name is not vaild! Please enter Welcome@123 in password";
+                    response.ValidationMessage = Constant.Valid_User;
                     return response;
                     //throw new Exception("User is not vaild!");
                 }
 
+                // if transactionDetail.AccountNumber is null or zero then An account does not exist! will return
                 var account = await accountService.Get(transactionDetail.AccountNumber);
 
                 if (account == null)
                 {
-                    response.ValidationMessage = "An account does not exist!";
+                    response.ValidationMessage = Constant.No_Account_Exist;
                     return response;
                 }
 
@@ -165,7 +168,7 @@ namespace BMS.Services.Concerte
                         DateTime = DateTime.Now
                     };
 
-                    var createdTransactionFailed = this.repoFailedTransactionLog.Insert(transactionFailed, transactionFailed.FailedTransactionLogId);
+                    this.repoFailedTransactionLog.Insert(transactionFailed, transactionFailed.FailedTransactionLogId);
                 }
 
                 throw;
@@ -198,7 +201,7 @@ namespace BMS.Services.Concerte
                 var minAmount = configuration["Rule:MinAmount"];
                 if (string.IsNullOrEmpty(minAmount))
                 {
-                    message = $"Configuration of MinAmount is missing";
+                    message = Constant.MinAmount_Missing;
                     _logger.LogError(message);
                     throw new Exception(message);
 
@@ -215,7 +218,7 @@ namespace BMS.Services.Concerte
                 var minPercent = configuration["Rule:MinPercent"];
                 if (string.IsNullOrEmpty(minPercent))
                 {
-                    message = $"Configuration of MinPercent is missing";
+                    message = Constant.MinPercent_Missing;
                     _logger.LogError(message);
                     throw new Exception(message);
                 }
@@ -248,7 +251,7 @@ namespace BMS.Services.Concerte
                 var maxDeposit = configuration["Rule:MaxDeposit"];
                 if (string.IsNullOrEmpty(maxDeposit))
                 {
-                     message = $"Configuration of MaxDeposit is missing";
+                    message = Constant.MaxDeposit_Missing;
                     _logger.LogError(message);
                     throw new Exception(message);
                 }

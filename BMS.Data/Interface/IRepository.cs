@@ -9,14 +9,14 @@ namespace BMS.Data.Interface
 {
     public interface IRepository<T>
     {
-        T Get(double id);
+        T Get(long id);
 
-        Dictionary<double, T> GetAll();
+        Dictionary<long, T> GetAll();
 
-        T Insert(T entity, double id);
+        T Insert(T entity, long id);
 
-        T Update(T entity, double id);
+        T Update(T entity, long id);
 
-        bool Delete(double id);
+        bool Delete(long id);
     }
 }

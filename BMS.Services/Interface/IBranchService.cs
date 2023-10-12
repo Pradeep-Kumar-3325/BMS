@@ -12,9 +12,9 @@ namespace BMS.Services.Interface
     {
         Task<Branch> Create(BranchDetail branch);
 
-        Task<Branch> Get(double Id);
+        Task<Branch> Get(long Id);
 
-        Task<bool> Delete(double Id);
+        Task<bool> Delete(long Id);
 
         Task<Branch> GetByName(string branch, string bank);
     }
