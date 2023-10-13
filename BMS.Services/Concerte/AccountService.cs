@@ -75,7 +75,7 @@ namespace BMS.Services.Concerte
                     //throw new Exception("An account cannot have less than $100 at any time in an account!");
                 }
 
-                // use Mapper
+                // we can use Mapper here
                 var account = new Account
                 {
                     AccountNumber = new Random().Next(0, Int32.MaxValue),
