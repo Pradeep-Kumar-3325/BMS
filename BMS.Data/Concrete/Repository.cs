@@ -35,7 +35,7 @@ namespace BMS.Data.Concrete
             try
             {
                 table = BMDDatabase.GetTable<T>();
-                return table.Where(x => x.Key == id).Select(x => x.Value).FirstOrDefault();
+                return table.Where(x => x.Key == id).Select(x => x.Value).SingleOrDefault();
             }
             catch (Exception ex)
             {
