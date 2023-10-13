@@ -30,8 +30,8 @@ namespace BMS.API.Controllers
         /// create account for same customer which have same username and email
         /// </summary>
         /// <remarks>
-        /// Account type would be saving, current and salary
-        /// branch name should be crpf camp and bank name should be sbi
+        /// Account type would be saving, current and salary.
+        /// Branch name should be crpf camp and bank name should be sbi
         /// </remarks>
         /// <param name="accountDetail">Account Details</param>
         /// <returns></returns>
