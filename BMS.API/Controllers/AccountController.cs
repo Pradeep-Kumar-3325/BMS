@@ -31,7 +31,7 @@ namespace BMS.API.Controllers
         /// </summary>
         /// <remarks>
         /// Account type would be saving, current and salary.
-        /// branch name should be crpf camp and bank name should be sbi
+        /// Branch name should be crpf camp and bank name should be sbi
         /// </remarks>
         /// <param name="accountDetail">Account Details</param>
         /// <returns></returns>
